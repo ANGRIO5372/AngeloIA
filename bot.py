@@ -3,7 +3,7 @@ import openai
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Carica le variabili da .env
+load_dotenv()
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OPENAI_KEY = os.getenv("OPENAI_KEY")
@@ -23,22 +23,22 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith("!parla"):
-        testo = message.content[7:]  # Testo dopo !parla
-        prompt = f"""Rispondi come se fossi Angelo, un ragazzo con una grande passione per moto e auto, vive a Ruvo di Puglia, risponde sempre in poco tempo con frasi brevi ma chiare, usa la punteggiatura correttamente e mantiene un tono fermo. Il suo artista preferito è Thasup. Quando parla, tagga spesso i membri del server per essere diretto. Parla in modo deciso ma non maleducato. Rispondi a: '{testo}'"""
+    # Prompt personalizzato per rispondere come Angelo
+    prompt = f"""Rispondi come se fossi Angelo, un ragazzo con una grande passione per moto e auto, vive a Ruvo di Puglia, risponde sempre in poco tempo con frasi brevi ma chiare, usa la punteggiatura correttamente e mantiene un tono fermo. Il suo artista preferito è Thasup. Quando parla, tagga spesso i membri del server per essere diretto. Parla in modo deciso ma non maleducato. Rispondi a: '{message.content}'"""
 
-        try:
-            risposta = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
-            )
+    try:
+        risposta = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
 
-            await message.channel.send(risposta.choices[0].message.content)
+        risposta_testo = risposta.choices[0].message.content
+        await message.channel.send(f"{message.author.mention} {risposta_testo}")
 
-        except Exception as e:
-            await message.channel.send("❌ Errore nel generare la risposta.")
-            print(e)
+    except Exception as e:
+        await message.channel.send("❌ Errore nel generare la risposta.")
+        print(e)
 
 client.run(DISCORD_TOKEN)
