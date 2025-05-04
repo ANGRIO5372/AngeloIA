@@ -38,7 +38,7 @@ async def on_message(message):
         await message.channel.send(f"{message.author.mention} {risposta_testo}")
 
     except Exception as e:
-        await message.channel.send("❌ Errore nel generare la risposta.")
-        print(e)
+    await message.channel.send("❌ Errore nel generare la risposta.")
+    print(e)
 
 client.run(DISCORD_TOKEN)
